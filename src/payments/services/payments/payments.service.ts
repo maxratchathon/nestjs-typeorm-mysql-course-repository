@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePaymentDto } from 'src/payments/dto/CreatePayment.dto';
 
 @Injectable()
@@ -13,20 +13,22 @@ export class PaymentsService {
              {
                 email: 'arizona@gmail.com'
             },
+            {
+                email: 'maxmerock@gmail.com'
+            },
         ];
 
-    createPayments(createPaymentDto: CreatePaymentDto) {
+    createPayment(createPaymentDto: CreatePaymentDto) {
         const {email} = createPaymentDto
         const user = this.users.find((user) => user.email === email)
 
         if (user)
         return {
-            id: 1,
             status: 'success',
 
         }
         else {
-            throw new BadRequestException();
+            throw new NotFoundException('User not found')
         }
     }
 }
