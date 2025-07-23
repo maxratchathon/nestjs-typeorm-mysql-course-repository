@@ -1,16 +1,15 @@
-import { send } from 'process';
-import { Req } from '@nestjs/common';
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { PaymentsController } from './payments.controller';
-import { query, Request, Response} from 'express';
-import { json } from 'stream/consumers';
+import {  Request, Response} from 'express';
 
 describe('PaymentsController', () => {
   let controller: PaymentsController;
 
-  const requestMock = {
+  let requestMock = {
     query: {}
   } as unknown as Request
+
 
   const statusResponseMock = {
     send: jest.fn((x) => x),
@@ -40,5 +39,15 @@ describe('PaymentsController', () => {
       expect(responseMock.status).toHaveBeenCalledWith(400);
       expect(statusResponseMock.send).toHaveBeenCalledWith({ msg: 'Count and page query parameters are required.' });
     });
+
+    it('should return a status of 200 if query parameters are provided', () => {
+      requestMock.query = {
+        page: "1", count: "1"
+      }
+      controller.getPayments(requestMock, responseMock)
+      expect(responseMock.status).toHaveBeenCalledWith(200);
+      expect(statusResponseMock.send).toHaveBeenCalledWith({msg: `Payments retrieved successfully` })
+    })
   });
+  console.log(requestMock)
 });
